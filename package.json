@@ -1,0 +1,76 @@
+{
+  "name": "react-date-input",
+  "version": "0.0.0",
+  "description": "Date Input UI component for React optimized for i18n and a11y",
+  "keywords": [
+    "react",
+    "date",
+    "time",
+    "datetime",
+    "timezone",
+    "ui",
+    "ux",
+    "a11y",
+    "i18n",
+    "l10n",
+    "intl"
+  ],
+  "homepage": "http://github.com/rxaviers/react-date-input",
+  "author": {
+    "name": "Rafael Xavier de Souza",
+    "email": "rxaviers@gmail.com",
+    "url": "http://rafael.xavier.blog.br"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:rxaviers/react-date-input.git"
+  },
+  "bugs": {
+    "url": "http://github.com/rxaviers/react-date-input/issues"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "license": "MIT",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "check-dependencies --check-git-urls && eslint --ext js,jsx src test storybook",
+    "start": "http-server dist -c-1 -p 8000",
+    "dev": "webpack-dev-server --port 8000 --config webpack-config.js --hot --progress --colors --inline --history-api-fallback",
+    "build": "rm dist/* dist/i18n/* 2>/dev/null; webpack --production --config webpack-config.js",
+    "storybook": "start-storybook --dont-track -p 9001 -c ./storybook -s ./src",
+    "build-storybook": "build-storybook -c ./storybook -s ./src -o storybook-dist"
+  },
+  "dependencies": {
+    "globalize": "^1.1.x",
+    "react": "^15.2.1"
+  },
+  "devDependencies": {
+    "@kadira/storybook": "^2.35.3",
+    "babel-core": "^6.22.1",
+    "babel-eslint": "^6.0.4",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-register": "^6.7.2",
+    "chai": "^3.5.0",
+    "check-dependencies": "^0.12.0",
+    "cldr-data": ">=25",
+    "enzyme": "2.2.0",
+    "eslint": "^1.10.3",
+    "eslint-config-defaults": "^7.1.1",
+    "eslint-plugin-react": "^3.11.2",
+    "globalize": "^1.1.x",
+    "globalize-webpack-plugin": "^0.3.10",
+    "html-webpack-plugin": "^2.28.0",
+    "mocha": "^2.4.5",
+    "react": "^15.2.1",
+    "react-dom": "^15.2.1",
+    "react-hot-loader": "^1.3.1",
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.16.3"
+  }
+}
