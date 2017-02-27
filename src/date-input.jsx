@@ -78,7 +78,7 @@ export default class DateInputBase extends Component {
     this.myRefs = {};
     this.defaultValues = {};
     this.isInitialized = {}
-    this.fmt(new Date(2015,0,1)).forEach(({type, value}) => {
+    this.fmt(new Date(2016,0,1)).forEach(({type, value}) => {
       this.defaultValues[type] = value;
       this.isInitialized[type] = true;
     });
