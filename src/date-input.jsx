@@ -3,7 +3,26 @@ import React, { Component, PropTypes } from "react";
 
 const separators = "/.- ";
 
+const UP = 38;
+const DOWN = 40;
+
+const get = {
+  day: "getDate",
+  month: "getMonth",
+  year: "getFullYear"
+};
+
+const set = {
+  day: "setDate",
+  month: "setMonth",
+  year: "setFullYear"
+};
+
 function noop() {}
+
+function lastDay(date) {
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+}
 
 export class DateInput extends Component {
   render() {
@@ -72,8 +91,8 @@ export default class DateInputBase extends Component {
     const {onChange = noop} = this.props;
     this.isInitialized[type] = !!value.length;
 
-    // Special handling for type "month": handle day limit.
-    if (type === "month") {
+    // Special handling for type "month" and "year": handle day limit.
+    if (type === "month" || type === "year") {
       date = new Date(date.getTime());
       origDay = date.getDate();
       date.setDate(1);
@@ -96,11 +115,9 @@ export default class DateInputBase extends Component {
 
     if (aux) {
 
-      // Special handling for type "month": handle day limit.
-      if (type === "month") {
-        let day = origDay;
-        let lastDay = new Date( aux.getFullYear(), aux.getMonth() + 1, 0 ).getDate();
-        aux.setDate(day < lastDay ? day : lastDay);
+      // Special handling for type "month" and "year": handle day limit.
+      if (type === "month" || type === "year") {
+        aux.setDate(Math.min(origDay, lastDay(aux)));
       }
 
       this.setState({date: aux});
@@ -112,7 +129,7 @@ export default class DateInputBase extends Component {
     // If key is a separator, focus next element.
     if (separators.indexOf(event.key) !== -1) {
       let aux = false;
-      let next = this.fmt(this.state.date).filter(part => {
+      const next = this.fmt(this.state.date).filter(part => {
         if (aux && part.type !== "literal") {
           aux = false;
           return true;
@@ -125,6 +142,25 @@ export default class DateInputBase extends Component {
       if (next) {
         this.myRefs[next.type].focus();
       }
+    }
+  }
+
+  handleKeyDown(type, event) {
+    if (event.keyCode === UP || event.keyCode === DOWN) {
+      const {onChange = noop} = this.props;
+      let origDay;
+      let date = new Date(this.state.date.getTime());
+      event.preventDefault();
+      if (type === "month" || type === "year") {
+        origDay = date.getDate();
+        date.setDate(1);
+      }
+      date[set[type]](+ date[get[type]]() + (event.keyCode === UP ? 1 : -1));
+      if (type === "month" || type === "year") {
+        date.setDate(Math.min(origDay, lastDay(date)));
+      }
+      this.setState({date});
+      onChange(date);
     }
   }
 
@@ -147,6 +183,7 @@ export default class DateInputBase extends Component {
               name={type}
               value={value}
               onChange={this.handleChange.bind(this, type)}
+              onKeyDown={this.handleKeyDown.bind(this, type)}
               onKeyPress={this.handleKeyPress.bind(this, type)}
               placeholder={this.placeholders[type]}
             />
