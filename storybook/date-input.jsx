@@ -24,6 +24,34 @@ const customStyle = `
   }
 `;
 
+const customStyle2 = `
+  * {
+    font-size: 20px;
+  }
+  input {
+    -moz-appearance: none;
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: 0px solid #aaa;
+    border-radius: 6px;
+    box-sizing: content-box;
+    display: inline-block !important;
+    padding: 0.1em;
+    line-height: 1em;
+  }
+  input:focus {
+    background-color: #9cf;
+  }
+  input[name=year] {
+    width: 2.8em;
+  }
+  input[name=month], input[name=day] {
+    width: 1.4em;
+  }
+  span {
+    padding: 0 0.2em;
+  }
+`;
+
 const locale = "en";
 
 storiesOf("Components", module)
@@ -31,6 +59,14 @@ storiesOf("Components", module)
     return (
       <div>
         <style>{customStyle}</style>
+        <DateInput locale={locale} onChange={onChange} />
+      </div>
+    );
+  })
+  .add("DateInput style2", () => {
+    return (
+      <div>
+        <style>{customStyle2}</style>
         <DateInput locale={locale} onChange={onChange} />
       </div>
     );
@@ -43,3 +79,11 @@ storiesOf("Components", module)
       </div>
     );
   })
+  .add("MonthInput style2", () => {
+    return (
+      <div>
+        <style>{customStyle2}</style>
+        <MonthInput locale={locale} onChange={onChange} />
+      </div>
+    );
+  });
