@@ -52,7 +52,7 @@ const customStyle2 = `
   }
 `;
 
-const locale = "en";
+const locale = "de";
 
 storiesOf("Components", module)
   .add("DateInput", () => {
@@ -65,7 +65,7 @@ storiesOf("Components", module)
   })
   .add("DateInput style2", () => {
     return (
-      <div>
+      <div style={{border: "1px solid #ccc", display: "inline-block", padding: "0.2em"}}>
         <style>{customStyle2}</style>
         <DateInput locale={locale} onChange={onChange} />
       </div>
@@ -81,7 +81,7 @@ storiesOf("Components", module)
   })
   .add("MonthInput style2", () => {
     return (
-      <div>
+      <div style={{border: "1px solid #ccc", display: "inline-block", padding: "0.2em"}}>
         <style>{customStyle2}</style>
         <MonthInput locale={locale} onChange={onChange} />
       </div>
