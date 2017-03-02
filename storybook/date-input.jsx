@@ -1,6 +1,7 @@
 import React from "react"
 import { storiesOf, action } from "@kadira/storybook"
 import {DateInput, MonthInput} from "../src/date-input"
+import "../src/plugin-globalize"
 
 function onChange(date) {
   action('Date changed to')(date.toString());
@@ -9,15 +10,6 @@ function onChange(date) {
 const customStyle = `
   * {
     font-size: 20px;
-  }
-  input[name=year] {
-    width: 4em;
-  }
-  input[name=month] {
-    width: 2em;
-  }
-  input[name=day] {
-    width: 2em;
   }
   span {
     padding: 0 0.2em;
@@ -41,18 +33,12 @@ const customStyle2 = `
   input:focus {
     background-color: #9cf;
   }
-  input[name=year] {
-    width: 2.8em;
-  }
-  input[name=month], input[name=day] {
-    width: 1.4em;
-  }
   span {
     padding: 0 0.2em;
   }
 `;
 
-const locale = "de";
+const locale = "en";
 
 storiesOf("Components", module)
   .add("DateInput", () => {

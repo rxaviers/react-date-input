@@ -27,7 +27,7 @@ function lastDay(date) {
 export class DateInput extends Component {
   render() {
     return (
-      <DateInputBase {...this.props} style="yMd" />
+      <DateInputBase {...this.props} style="date-short" />
     );
   }
 }
@@ -40,26 +40,18 @@ export class MonthInput extends Component {
   }
 }
 
-export default class DateInputBase extends Component {
-  static createFormatter = function(props) {
-    let formatter;
-    if (props.style === "yM") {
-      formatter = new Intl.DateTimeFormat(props.locale, {
-        year: "numeric",
-        month: "numeric"
-      });
-    } else {
-      formatter = new Intl.DateTimeFormat(props.locale);
-    }
-    return formatter.formatToParts.bind(formatter);
-  }
+function throwNotImplementedPlugin() {
+  throw new Error(
+    "Plugin your desired i18n library, e.g., import \"date-input/src/plugin-globalize\""
+  );
+}
 
-  static createParser = function(props) {
-    return new Globalize(props.locale).dateParser({skeleton: props.style});
-  }
+export default class DateInputBase extends Component {
+  static createFormatter = throwNotImplementedPlugin;
+  static createParser = throwNotImplementedPlugin;
 
   static getDisplayNames = function(props) {
-    var globalize = new Globalize(props.locale);
+    let globalize = new Globalize(props.locale);
     return {
       day: globalize.cldr.main('dates/fields/day-narrow/displayName'),
       month: globalize.cldr.main('dates/fields/month-narrow/displayName'),
@@ -77,19 +69,33 @@ export default class DateInputBase extends Component {
     };
     this.myRefs = {};
     this.defaultValues = {};
+    this.inputSizes = {};
     this.isInitialized = {}
-    this.fmt(new Date(2016,0,1)).forEach(({type, value}) => {
+    this.fmt(new Date(2016,11,31)).forEach(({type, value}) => {
       this.defaultValues[type] = value;
+      this.inputSizes[type] = value.length;
       this.isInitialized[type] = true;
     });
   }
 
   handleChange(type) {
     let origDay;
-    const {value} = this.myRefs[type];
+    let {value} = this.myRefs[type];
     let {date} = this.state;
     const {onChange = noop} = this.props;
     this.isInitialized[type] = !!value.length;
+
+    // Special handling for value whose type !== "year", pick last two digits.
+    // For example, "030" becomes "30".
+    //
+    // This is needed because some locales use zero-padded fields, therefore
+    // trying to enter "30" takes the following steps:
+    // - enter 3, value changes from "" to "3" and formatted becomes "03";
+    // - enter 0, value changes from "03" to "030" (sliced "30") and formatted
+    //   becomes "30". Note that it only works if sliced.
+    if (type !== "year") {
+      value = value.slice(-2);
+    }
 
     // Special handling for type "month" and "year": handle day limit.
     if (type === "month" || type === "year") {
@@ -141,6 +147,7 @@ export default class DateInputBase extends Component {
       })[0];
       if (next) {
         this.myRefs[next.type].focus();
+        this.myRefs[next.type].select();
       }
     }
   }
@@ -186,6 +193,7 @@ export default class DateInputBase extends Component {
               onKeyDown={this.handleKeyDown.bind(this, type)}
               onKeyPress={this.handleKeyPress.bind(this, type)}
               placeholder={this.placeholders[type]}
+              size={this.inputSizes[type]}
             />
           );
         })}
