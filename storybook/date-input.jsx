@@ -4,7 +4,7 @@ import {DateInput, MonthInput} from "../src/date-input"
 import "../src/plugin-globalize"
 
 function onChange(date) {
-  action('Date changed to')(date.toString());
+  action("Date changed to")(date === null ? null : date.toString());
 }
 
 const customStyle = `

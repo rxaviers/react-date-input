@@ -3,7 +3,9 @@ import React, { Component, PropTypes } from "react";
 
 const separators = "/.- ";
 
+const LEFT = 37;
 const UP = 38;
+const RIGHT = 39;
 const DOWN = 40;
 
 const get = {
@@ -67,6 +69,11 @@ export default class DateInputBase extends Component {
     this.state = {
       date: props.value || new Date()
     };
+
+    // TODO: Reverse on RTL locale.
+    this.NEXT = RIGHT;
+    this.PREV = LEFT;
+
     this.myRefs = {};
     this.defaultValues = {};
     this.inputSizes = {};
@@ -82,7 +89,6 @@ export default class DateInputBase extends Component {
     let origDay;
     let {value} = this.myRefs[type];
     let {date} = this.state;
-    const {onChange = noop} = this.props;
     this.isInitialized[type] = !!value.length;
 
     // Special handling for value whose type !== "year", pick last two digits.
@@ -127,24 +133,14 @@ export default class DateInputBase extends Component {
       }
 
       this.setState({date: aux});
-      onChange(aux);
+      this.triggerOnChange(aux);
     }
   }
 
   handleKeyPress(type, event) {
     // If key is a separator, focus next element.
     if (separators.indexOf(event.key) !== -1) {
-      let aux = false;
-      const next = this.fmt(this.state.date).filter(part => {
-        if (aux && part.type !== "literal") {
-          aux = false;
-          return true;
-        }
-        if (part.type === type) {
-          aux = true;
-        }
-        return false;
-      })[0];
+      let next = this.move(type, "next");
       if (next) {
         this.myRefs[next.type].focus();
         this.myRefs[next.type].select();
@@ -153,8 +149,15 @@ export default class DateInputBase extends Component {
   }
 
   handleKeyDown(type, event) {
-    if (event.keyCode === UP || event.keyCode === DOWN) {
-      const {onChange = noop} = this.props;
+    if (event.keyCode === this.NEXT || event.keyCode === this.PREV) {
+      let next = this.move(type, event.keyCode === this.NEXT ? "next" : "prev");
+      if (next) {
+        setTimeout(() => {
+          this.myRefs[next.type].focus();
+          this.myRefs[next.type].select();
+        });
+      }
+    } else if (event.keyCode === UP || event.keyCode === DOWN) {
       let origDay;
       let date = new Date(this.state.date.getTime());
       event.preventDefault();
@@ -167,8 +170,41 @@ export default class DateInputBase extends Component {
         date.setDate(Math.min(origDay, lastDay(date)));
       }
       this.setState({date});
-      onChange(date);
+      this.triggerOnChange(date);
     }
+  }
+
+  isValid() {
+    return Object.keys(this.isInitialized)
+      .map(type => this.isInitialized[type])
+      .every(value => value === true)
+  }
+
+  move(type, direction) {
+    let aux;
+    let parts = this.fmt(this.state.date);
+    if (direction === "prev") {
+      parts = parts.reverse();
+    }
+    return parts.filter(part => {
+      if (aux && part.type !== "literal") {
+        aux = false;
+        return true;
+      }
+      if (part.type === type) {
+        aux = true;
+      }
+      return false;
+    })[0];
+  }
+
+  triggerOnChange(date) {
+    const {onChange = noop} = this.props;
+    if (!this.isValid()) {
+      onChange(null);
+      return;
+    }
+    onChange(date);
   }
 
   render() {
