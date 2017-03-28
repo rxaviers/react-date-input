@@ -51,20 +51,14 @@ function throwNotImplementedPlugin() {
 export default class DateInputBase extends Component {
   static createFormatter = throwNotImplementedPlugin;
   static createParser = throwNotImplementedPlugin;
-
-  static getDisplayNames = function(props) {
-    let globalize = new Globalize(props.locale);
-    return {
-      day: globalize.cldr.main('dates/fields/day-narrow/displayName'),
-      month: globalize.cldr.main('dates/fields/month-narrow/displayName'),
-      year: globalize.cldr.main('dates/fields/year-narrow/displayName')
-    };
-  }
+  static createNumberParser = throwNotImplementedPlugin;
+  static getDisplayNames = throwNotImplementedPlugin;
 
   constructor(props) {
     super(props);
     this.fmt = DateInputBase.createFormatter(props);
     this.parser = DateInputBase.createParser(props);
+    this.numberParser = DateInputBase.createNumberParser(props);
     this.placeholders = DateInputBase.getDisplayNames(props);
     this.state = {
       date: props.value || new Date()
@@ -78,7 +72,7 @@ export default class DateInputBase extends Component {
     this.defaultValues = {};
     this.inputSizes = {};
     this.isInitialized = {}
-    this.fmt(new Date(2016,11,31)).forEach(({type, value}) => {
+    this.fmt(new Date(2016, 11, 28)).forEach(({type, value}) => {
       this.defaultValues[type] = value;
       this.inputSizes[type] = value.length;
       this.isInitialized[type] = true;
@@ -89,6 +83,12 @@ export default class DateInputBase extends Component {
     let origDay;
     let {value} = this.myRefs[type];
     let {date} = this.state;
+
+    // Special handling for backspacing zero-padded numbers, e.g., backspacing
+    // "03" becomes "0" that should actually be handled as "".
+    if (this.numberParser(value) === 0) {
+      value = "";
+    }
     this.isInitialized[type] = !!value.length;
 
     // Special handling for value whose type !== "year", pick last two digits.

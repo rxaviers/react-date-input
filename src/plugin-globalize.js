@@ -26,3 +26,16 @@ DateInput.createParser = function(props) {
     globalizeOptions(props)
   );
 };
+
+DateInput.createNumberParser = function(props) {
+  return new Globalize(props.locale).numberParser();
+};
+
+DateInput.getDisplayNames = function(props) {
+  let globalize = new Globalize(props.locale);
+  return {
+    day: globalize.cldr.main('dates/fields/day-narrow/displayName'),
+    month: globalize.cldr.main('dates/fields/month-narrow/displayName'),
+    year: globalize.cldr.main('dates/fields/year-narrow/displayName')
+  };
+};
