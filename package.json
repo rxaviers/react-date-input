@@ -1,6 +1,6 @@
 {
   "name": "react-date-input",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Date Input UI component for React optimized for i18n and a11y",
   "keywords": [
     "react",
