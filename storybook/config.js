@@ -1,5 +1,4 @@
-import React from "react";
-import { configure, addDecorator, setAddon } from "@kadira/storybook";
+import {configure} from "@kadira/storybook";
 
 function loadStories() {
   /* eslint-disable global-require */

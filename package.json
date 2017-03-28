@@ -33,17 +33,13 @@
     "dist"
   ],
   "license": "MIT",
-  "main": "./src/index.js",
+  "main": "./dist/date-input.js",
   "scripts": {
     "test": "check-dependencies --check-git-urls && eslint --ext js,jsx src test storybook",
-    "start": "http-server dist -c-1 -p 8000",
-    "dev": "webpack-dev-server --port 8000 --config webpack-config.js --hot --progress --colors --inline --history-api-fallback",
-    "build": "rm dist/* dist/i18n/* 2>/dev/null; webpack --production --config webpack-config.js",
-    "storybook": "start-storybook --dont-track -p 9001 -c ./storybook -s ./src",
-    "build-storybook": "build-storybook -c ./storybook -s ./src -o storybook-dist"
+    "build": "npm test && mkdir dist && rm -f dist/* && echo Building && babel -s -d dist src && echo Done",
+    "storybook": "start-storybook --dont-track -p 9001 -c ./storybook -s ./src"
   },
   "dependencies": {
-    "globalize": "1.3.0-alpha.0",
     "react": "^15.2.1"
   },
   "devDependencies": {
@@ -60,10 +56,10 @@
     "check-dependencies": "^0.12.0",
     "cldr-data": ">=25",
     "enzyme": "2.2.0",
-    "eslint": "^1.10.3",
-    "eslint-config-defaults": "^7.1.1",
-    "eslint-plugin-react": "^3.11.2",
-    "globalize": "^1.1.x",
+    "eslint": "^3.18.0",
+    "eslint-config-defaults": "^9.0.0",
+    "eslint-plugin-react": "^6.10.3",
+    "globalize": "1.3.0-alpha.0",
     "globalize-webpack-plugin": "^0.3.10",
     "html-webpack-plugin": "^2.28.0",
     "iana-tz-data": "^2017.1.0",

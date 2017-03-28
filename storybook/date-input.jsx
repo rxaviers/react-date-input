@@ -1,7 +1,7 @@
-import React from "react"
-import { storiesOf, action } from "@kadira/storybook"
-import {DateInput, MonthInput} from "../src/date-input"
-import "../src/plugin-globalize"
+import React from "react";
+import { storiesOf, action } from "@kadira/storybook";
+import {DateInput, MonthInput} from "../src/date-input";
+import "../src/plugin-globalize";
 
 function onChange(date) {
   action("Date changed to")(date === null ? null : date.toString());

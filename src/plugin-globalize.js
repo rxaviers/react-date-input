@@ -34,8 +34,8 @@ DateInput.createNumberParser = function(props) {
 DateInput.getDisplayNames = function(props) {
   let globalize = new Globalize(props.locale);
   return {
-    day: globalize.cldr.main('dates/fields/day-narrow/displayName'),
-    month: globalize.cldr.main('dates/fields/month-narrow/displayName'),
-    year: globalize.cldr.main('dates/fields/year-narrow/displayName')
+    day: globalize.cldr.main("dates/fields/day-narrow/displayName"),
+    month: globalize.cldr.main("dates/fields/month-narrow/displayName"),
+    year: globalize.cldr.main("dates/fields/year-narrow/displayName")
   };
 };

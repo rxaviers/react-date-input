@@ -1,5 +1,4 @@
-import Globalize from "globalize";
-import React, { Component, PropTypes } from "react";
+import React, {Component, PropTypes} from "react";
 
 const separators = "/.- ";
 
@@ -54,6 +53,12 @@ export default class DateInputBase extends Component {
   static createNumberParser = throwNotImplementedPlugin;
   static getDisplayNames = throwNotImplementedPlugin;
 
+  static propTypes = {
+    locale: PropTypes.string,
+    onChange: PropTypes.func,
+    value: PropTypes.instanceOf(Date)
+  };
+
   constructor(props) {
     super(props);
     this.fmt = DateInputBase.createFormatter(props);
@@ -71,7 +76,7 @@ export default class DateInputBase extends Component {
     this.myRefs = {};
     this.defaultValues = {};
     this.inputSizes = {};
-    this.isInitialized = {}
+    this.isInitialized = {};
     this.fmt(new Date(2016, 11, 28)).forEach(({type, value}) => {
       this.defaultValues[type] = value;
       this.inputSizes[type] = value.length;
@@ -112,7 +117,7 @@ export default class DateInputBase extends Component {
 
     let aux = this.fmt(date).map(part => {
       if (part.type === type) {
-        return {type, value}
+        return {type, value};
       }
       return part;
     }).reduce((string, part) => {
@@ -177,7 +182,7 @@ export default class DateInputBase extends Component {
   isValid() {
     return Object.keys(this.isInitialized)
       .map(type => this.isInitialized[type])
-      .every(value => value === true)
+      .every(value => value === true);
   }
 
   move(type, direction) {
