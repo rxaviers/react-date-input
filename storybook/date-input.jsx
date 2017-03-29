@@ -48,7 +48,7 @@ const locale = "en";
 storiesOf("Components", module)
   .add("Basic", () => {
     return (
-      <div>
+      <div lang="en">
         <style>{minimalStyle}</style>
 
         <h2>DateInput</h2>
@@ -56,7 +56,7 @@ storiesOf("Components", module)
         <DateInput locale={locale} defaultValue={null} onChange={onChange} />
         <p>Initialized with today (default)</p>
         <DateInput locale={locale} onChange={onChange} />
-        <p>Initialized with any arbitrary date</p>
+        <p>Initialized with an arbitrary date</p>
         <DateInput locale={locale} defaultValue={new Date(1982, 0, 2)} onChange={onChange} />
 
         <hr style={{margin: "3em 0"}}/>
@@ -66,7 +66,7 @@ storiesOf("Components", module)
         <MonthInput locale={locale} defaultValue={null} onChange={onChange} />
         <p>Initialized with today (default)</p>
         <MonthInput locale={locale} onChange={onChange} />
-        <p>Initialized with any arbitrary date</p>
+        <p>Initialized with an arbitrary date</p>
         <MonthInput locale={locale} defaultValue={new Date(1982, 0)} onChange={onChange} />
 
       </div>
@@ -82,7 +82,7 @@ storiesOf("Components", module)
         <DateInput className="input" locale={locale} defaultValue={null} onChange={onChange} />
         <p>Initialized with today (default)</p>
         <DateInput className="input" locale={locale} onChange={onChange} />
-        <p>Initialized with any arbitrary date</p>
+        <p>Initialized with an arbitrary date</p>
         <DateInput className="input" locale={locale} defaultValue={new Date(1982, 0, 2)} onChange={onChange} />
 
         <hr style={{margin: "3em 0"}}/>
@@ -92,7 +92,7 @@ storiesOf("Components", module)
         <MonthInput className="input" locale={locale} defaultValue={null} onChange={onChange} />
         <p>Initialized with today (default)</p>
         <MonthInput className="input" locale={locale} onChange={onChange} />
-        <p>Initialized with any arbitrary date</p>
+        <p>Initialized with an arbitrary date</p>
         <MonthInput className="input" locale={locale} defaultValue={new Date(1982, 0)} onChange={onChange} />
 
       </div>
