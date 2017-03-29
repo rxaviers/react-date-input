@@ -42,7 +42,7 @@ class App extends Component {
           <DateInput />
         </label>
         <label>
-          Credit Card expiration:
+          Month and year of establishment:
           <MonthInput />
         </label>
       </form>
@@ -58,19 +58,15 @@ ReactDOM.render(
 
 ## API
 
-### DateInput
+### DateInput & MonthInput
 
-| Name         | Type | Default | Description                          |
-| ------------ | ---- | ------- | ------------------------------------ |
-| defaultValue | date | `null`  | Set initial value of the date input. |
-| value        | date | `null`  | Set current value of the date input. |
+#### Properties
 
-### MonthInput
-
-| Name         | Type | Default | Description                          |
-| ------------ | ---- | ------- | ------------------------------------ |
-| defaultValue | date | `null`  | Set initial value of the date input. |
-| value        | date | `null`  | Set current value of the date input. |
+| Name         | Type     | Default | Description                              |
+| ------------ | -------- | ------- | ---------------------------------------- |
+| defaultValue | date     | `null`  | Set initial value of the date input.     |
+| value        | date     | `null`  | Set current value of the date input.     |
+| onChange     | function |         | Called for each valid date change, taking one argument `date` |
 
 ## Development
 

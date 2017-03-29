@@ -6,6 +6,7 @@ const LEFT = 37;
 const UP = 38;
 const RIGHT = 39;
 const DOWN = 40;
+const defaultDate = new Date(2016, 11, 28);
 
 const get = {
   day: "getDate",
@@ -25,10 +26,14 @@ function lastDay(date) {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 }
 
+function noLiteral({type}) {
+  return type !== "literal";
+}
+
 export class DateInput extends Component {
   render() {
     return (
-      <DateInputBase {...this.props} style="date-short" />
+      <DateInputBase {...this.props} dateStyle="date-short" />
     );
   }
 }
@@ -36,7 +41,7 @@ export class DateInput extends Component {
 export class MonthInput extends Component {
   render() {
     return (
-      <DateInputBase {...this.props} style="yM" />
+      <DateInputBase {...this.props} dateStyle="yM" />
     );
   }
 }
@@ -50,12 +55,16 @@ function throwNotImplementedPlugin() {
 export default class DateInputBase extends Component {
   static createFormatter = throwNotImplementedPlugin;
   static createParser = throwNotImplementedPlugin;
+  static createNumberFormatter = throwNotImplementedPlugin;
   static createNumberParser = throwNotImplementedPlugin;
   static getDisplayNames = throwNotImplementedPlugin;
 
   static propTypes = {
+    className: PropTypes.string,
+    defaultValue: PropTypes.instanceOf(Date),
     locale: PropTypes.string,
     onChange: PropTypes.func,
+    style: PropTypes.object,
     value: PropTypes.instanceOf(Date)
   };
 
@@ -63,10 +72,11 @@ export default class DateInputBase extends Component {
     super(props);
     this.fmt = DateInputBase.createFormatter(props);
     this.parser = DateInputBase.createParser(props);
+    this.numberFormatter = DateInputBase.createNumberFormatter(props);
     this.numberParser = DateInputBase.createNumberParser(props);
     this.placeholders = DateInputBase.getDisplayNames(props);
     this.state = {
-      date: props.value || new Date()
+      date: props.value || props.defaultValue || new Date()
     };
 
     // TODO: Reverse on RTL locale.
@@ -77,36 +87,45 @@ export default class DateInputBase extends Component {
     this.defaultValues = {};
     this.inputSizes = {};
     this.isInitialized = {};
-    this.fmt(new Date(2016, 11, 28)).forEach(({type, value}) => {
+    this.fmt(defaultDate).filter(noLiteral).forEach(({type, value}) => {
       this.defaultValues[type] = value;
       this.inputSizes[type] = value.length;
-      this.isInitialized[type] = true;
+      this.isInitialized[type] = !(props.value === null || props.defaultValue === null);
     });
   }
 
+  componentWillReceiveProps({value}) {
+    if (value === null) {
+      this.fmt(defaultDate).filter(noLiteral).forEach(({type}) => {
+        this.isInitialized[type] = false;
+      });
+    } else if (value) {
+      this.setState({date: value});
+    }
+  }
+
   handleChange(type) {
-    let origDay;
+    let origDay, numericValue;
     let {value} = this.myRefs[type];
     let {date} = this.state;
 
-    // Special handling for backspacing zero-padded numbers, e.g., backspacing
-    // "03" becomes "0" that should actually be handled as "".
-    if (this.numberParser(value) === 0) {
-      value = "";
+    // Special handling for zero-padded numbers.
+    // - backspacing zero-padded numbers, e.g., backspacing "03" becomes "0"
+    //   that should actually be handled as "".
+    // - trying to enter "30" takes the following steps:
+    //   - enter 3, value changes from "" to "3" and formatted becomes "03";
+    //   - enter 0, value changes from "03" to "030" (sliced "30") and formatted
+    //     becomes "30". Note that it only works if sliced.
+    if (value) {
+      numericValue = this.numberParser(value);
+      if (numericValue === 0) {
+        value = "";
+      } else {
+        value = this.numberFormatter(numericValue);
+      }
     }
-    this.isInitialized[type] = !!value.length;
 
-    // Special handling for value whose type !== "year", pick last two digits.
-    // For example, "030" becomes "30".
-    //
-    // This is needed because some locales use zero-padded fields, therefore
-    // trying to enter "30" takes the following steps:
-    // - enter 3, value changes from "" to "3" and formatted becomes "03";
-    // - enter 0, value changes from "03" to "030" (sliced "30") and formatted
-    //   becomes "30". Note that it only works if sliced.
-    if (type !== "year") {
-      value = value.slice(-2);
-    }
+    this.isInitialized[type] = !!value.length;
 
     // Special handling for type "month" and "year": handle day limit.
     if (type === "month" || type === "year") {
@@ -206,27 +225,28 @@ export default class DateInputBase extends Component {
   triggerOnChange(date) {
     const {onChange = noop} = this.props;
     if (!this.isValid()) {
-      onChange(null);
       return;
     }
     onChange(date);
   }
 
   render() {
+    const {className, style, locale} = this.props;
     const parts = this.fmt(this.state.date);
 
     return (
-      <div lang={this.props.locale}>
-        {parts.map(part => {
+      <div lang={locale} className={className} style={style}>
+        {parts.map((part, i) => {
           let {type, value} = part;
           if (type === "literal") {
             return (
-              <span>{value}</span>
+              <span key={i}>{value}</span>
             );
           }
           value = this.isInitialized[type] ? value : "";
           return (
             <input
+              key={i}
               ref={self => this.myRefs[type] = self}
               name={type}
               value={value}

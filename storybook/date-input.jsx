@@ -7,7 +7,7 @@ function onChange(date) {
   action("Date changed to")(date === null ? null : date.toString());
 }
 
-const customStyle = `
+const minimalStyle = `
   * {
     font-size: 20px;
   }
@@ -16,9 +16,14 @@ const customStyle = `
   }
 `;
 
-const customStyle2 = `
+const customStyle = `
   * {
     font-size: 20px;
+  }
+  .input {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 0.2em;
   }
   input {
     -moz-appearance: none;
@@ -41,35 +46,55 @@ const customStyle2 = `
 const locale = "en";
 
 storiesOf("Components", module)
-  .add("DateInput", () => {
+  .add("Basic", () => {
+    return (
+      <div>
+        <style>{minimalStyle}</style>
+
+        <h2>DateInput</h2>
+        <p>Initially empty</p>
+        <DateInput locale={locale} defaultValue={null} onChange={onChange} />
+        <p>Initialized with today (default)</p>
+        <DateInput locale={locale} onChange={onChange} />
+        <p>Initialized with any arbitrary date</p>
+        <DateInput locale={locale} defaultValue={new Date(1982, 0, 2)} onChange={onChange} />
+
+        <hr style={{margin: "3em 0"}}/>
+
+        <h2>MonthInput</h2>
+        <p>Initially empty</p>
+        <MonthInput locale={locale} defaultValue={null} onChange={onChange} />
+        <p>Initialized with today (default)</p>
+        <MonthInput locale={locale} onChange={onChange} />
+        <p>Initialized with any arbitrary date</p>
+        <MonthInput locale={locale} defaultValue={new Date(1982, 0)} onChange={onChange} />
+
+      </div>
+    );
+  })
+  .add("Custom style", () => {
     return (
       <div>
         <style>{customStyle}</style>
-        <DateInput locale={locale} onChange={onChange} />
-      </div>
-    );
-  })
-  .add("DateInput style2", () => {
-    return (
-      <div style={{border: "1px solid #ccc", display: "inline-block", padding: "0.2em"}}>
-        <style>{customStyle2}</style>
-        <DateInput locale={locale} onChange={onChange} />
-      </div>
-    );
-  })
-  .add("MonthInput", () => {
-    return (
-      <div>
-        <style>{customStyle}</style>
-        <MonthInput locale={locale} onChange={onChange} />
-      </div>
-    );
-  })
-  .add("MonthInput style2", () => {
-    return (
-      <div style={{border: "1px solid #ccc", display: "inline-block", padding: "0.2em"}}>
-        <style>{customStyle2}</style>
-        <MonthInput locale={locale} onChange={onChange} />
+
+        <h2>DateInput</h2>
+        <p>Initially empty</p>
+        <DateInput className="input" locale={locale} defaultValue={null} onChange={onChange} />
+        <p>Initialized with today (default)</p>
+        <DateInput className="input" locale={locale} onChange={onChange} />
+        <p>Initialized with any arbitrary date</p>
+        <DateInput className="input" locale={locale} defaultValue={new Date(1982, 0, 2)} onChange={onChange} />
+
+        <hr style={{margin: "3em 0"}}/>
+
+        <h2>MonthInput</h2>
+        <p>Initially empty</p>
+        <MonthInput className="input" locale={locale} defaultValue={null} onChange={onChange} />
+        <p>Initialized with today (default)</p>
+        <MonthInput className="input" locale={locale} onChange={onChange} />
+        <p>Initialized with any arbitrary date</p>
+        <MonthInput className="input" locale={locale} defaultValue={new Date(1982, 0)} onChange={onChange} />
+
       </div>
     );
   });

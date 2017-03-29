@@ -1,41 +1,44 @@
 import DateInput from "./date-input";
 import Globalize from "globalize";
 
-function globalizeOptions({style, timeZone}) {
+function globalizeOptions({dateStyle, timeZone}) {
   let aux;
   let options = {timeZone};
 
-  aux = style.split("-");
+  aux = dateStyle.split("-");
   if (aux.length > 1) {
     options[aux[0]] = aux[1];
   } else {
-    options.skeleton = style;
+    options.skeleton = dateStyle;
   }
 
   return options;
 }
 
 DateInput.createFormatter = function(props) {
-  return new Globalize(props.locale).dateToPartsFormatter(
+  return Globalize.dateToPartsFormatter(
     globalizeOptions(props)
   );
 };
 
 DateInput.createParser = function(props) {
-  return new Globalize(props.locale).dateParser(
+  return Globalize.dateParser(
     globalizeOptions(props)
   );
 };
 
-DateInput.createNumberParser = function(props) {
-  return new Globalize(props.locale).numberParser();
+DateInput.createNumberFormatter = function() {
+  return Globalize.numberFormatter();
 };
 
-DateInput.getDisplayNames = function(props) {
-  let globalize = new Globalize(props.locale);
+DateInput.createNumberParser = function() {
+  return Globalize.numberParser();
+};
+
+DateInput.getDisplayNames = function() {
   return {
-    day: globalize.cldr.main("dates/fields/day-narrow/displayName"),
-    month: globalize.cldr.main("dates/fields/month-narrow/displayName"),
-    year: globalize.cldr.main("dates/fields/year-narrow/displayName")
+    day: Globalize.cldr.main("dates/fields/day-narrow/displayName"),
+    month: Globalize.cldr.main("dates/fields/month-narrow/displayName"),
+    year: Globalize.cldr.main("dates/fields/year-narrow/displayName")
   };
 };
